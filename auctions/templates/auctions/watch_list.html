@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Watch List</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for listing in listings %}
+  <a href="{% url 'listing' id=listing.listing_id.id %}" style="text-decoration: none; color: inherit;">
+  <div class="col">
+      <div class="card" style="width: 18rem;">
+        <img src="{{ listing.listing_id.image.url }}" class="card-img-top" alt="item image">
+        <div class="card-body">
+          <h5 class="card-title">{{listing.listing_id.title}}</h5>
+          <p class="card-text">{{listing.listing_id.description}}</p>
+          <form action="{% url 'remove_from_watch_list'%}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{listing.id}}">
+            <input type="submit" value="Remove item from listing">
+          </form>
+      </div>
+    </div>
+  </div>
+  </a>
+
+  {% endfor %}
+</div>
+
+{% endblock %}

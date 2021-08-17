@@ -1,0 +1,75 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+<link href="{% static 'auctions/listing.css' %}" rel="stylesheet">
+{% block body %}
+
+  <div class="mb-3" style="max-width: 1000px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ listing.image.url }}" class="img-fluid rounded-start" alt="{{item.title}}">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">Title: {{listing.title}}</h5>
+        <p class="card-text">Description: {{listing.description}}</p>
+        <h5>category:<p>{{item_category}}</p></h5>
+        <p class="card-text"><large class="text-muted">${{bid.bid}}</large></p>
+        {% if user.is_authenticated %}
+        <form action="{% url 'watch_list'%}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" value="{{listing.user_id.id}}">
+          <input type="hidden" name="listing_id" value="{{listing.id}}">
+          <input type="submit" value="Add to Watch List">
+        </form>
+        <button type="button" name="button" data-toggle="modal" data-target="#bid">Bid</button>
+          {% if user.id == listing.user_id.id %}
+          <form action="{% url 'end_auction'%}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="listing_id" value="{{listing.id}}">
+            <input type="hidden" name="bid_id" value="{{bid.id}}">
+            <input type="submit" value="close auction">
+          </form>
+          {% endif %}
+          <form action="{% url 'comment' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="listing_id" value="{{listing.id}}">
+            <textarea name="comment" rows="6" cols="60"></textarea>
+            <input type="submit" value="Add comment">
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" id="bid">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{listing.title}}</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form class="" action="{% url 'bid'%}" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+            <input type="hidden" name="listing_id" value="{{listing.id}}">
+            <input type="hidden" name="id" value="{{bid.id}}">
+            <input type="hidden" name="winner" value="{{winner}}">
+            <input type="text" name="bid" value="{{bid.bid}}">
+        </div>
+        <div class="modal-footer">
+          <input type="submit" name="" value="Save changes" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% for comment in comments %}
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <p class="card-text">{{comment.comment}}</p>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

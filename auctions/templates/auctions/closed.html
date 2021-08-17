@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="mb-3" style="max-width: 1000px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ listing.image.url }}" class="img-fluid rounded-start" alt="{{listing.title}}">
+    </div>
+    <div class="col-md-8">
+      {% if user.id == listing.winner.id %}
+        <h1>You have won this item</h1>
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{listing.title}}</h5>
+        <p class="card-text">{{listing.description}}</p>
+        <p class="card-text"><large class="text-muted">${{listing.price_sold}}</large></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
